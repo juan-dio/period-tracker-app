@@ -5,10 +5,10 @@ import { formatDate } from "@/lib/utils";
 export default function DashboardContent({ summary }) {
   const {
     lastPeriod,
-    meanCycleLength,
-    meanPeriodLength,
-    lutealPhaseLength,
-    predictions,
+    meanCycleLength = 28,
+    meanPeriodLength = 5,
+    lutealPhaseLength = 14,
+    predictions = [],
   } = summary || {};
 
   const today = new Date();
@@ -117,7 +117,7 @@ export default function DashboardContent({ summary }) {
     : 0;
 
   return (
-    <main className="flex-1 p-6 lg:p-10">
+    <main className="flex-1 p-6 lg:p-10" suppressHydrationWarning>
       <div className="mx-auto max-w-5xl">
         <header className="mb-8">
           <div className="flex flex-col gap-1">
@@ -154,7 +154,7 @@ export default function DashboardContent({ summary }) {
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                     <p className="text-text-muted-light text-sm">Day</p>
                     <p className="text-text-light text-4xl font-bold">
-                      {currentCycle}
+                      {currentCycle ?? "-"}
                     </p>
                     <p className="text-text-muted-light text-sm">
                       of {meanCycleLength}{" "}
@@ -205,7 +205,9 @@ export default function DashboardContent({ summary }) {
                     Predicted Ovulation
                   </p>
                   <p className="text-text-light tracking-light text-2xl font-bold leading-tight">
-                    in {nextOvulationDays} days
+                    {nextOvulationDays !== null
+                      ? `in ${nextOvulationDays} days`
+                      : "Not enough data yet"}
                   </p>
                 </div>
                 <div className="flex min-w-[158px] flex-1 flex-col gap-1 rounded-lg p-4 bg-background-light">
@@ -213,7 +215,9 @@ export default function DashboardContent({ summary }) {
                     Next Period Starts
                   </p>
                   <p className="text-text-light tracking-light text-2xl font-bold leading-tight">
-                    in {nextPeriodDays} days
+                    {nextPeriodDays !== null
+                      ? `in ${nextPeriodDays} days`
+                      : "Not enough data yet"}
                   </p>
                 </div>
               </div>

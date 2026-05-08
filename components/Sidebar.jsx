@@ -7,18 +7,26 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 shrink-0 bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
-      <div className="flex flex-col gap-8">
+    <aside className="sticky top-0 h-screen w-64 shrink-0 overflow-hidden bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
+      <div className="flex h-full flex-col gap-8">
         <div className="flex items-center gap-2 px-2">
-          <span className="material-symbols-outlined text-primary text-3xl">cycle</span>
+          <span className="material-symbols-outlined text-primary text-3xl">
+            cycle
+          </span>
           <h1 className="text-xl font-bold text-text-light">Femina</h1>
         </div>
         <div className="flex flex-col gap-2">
-          <Link className={`flex items-center gap-3 px-4 py-2 rounded-lg ${pathname === "/" ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"} transition-colors`} href="/">
+          <Link
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg ${pathname === "/" ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"} transition-colors`}
+            href="/"
+          >
             <span className="material-symbols-outlined">dashboard</span>
             <p className="text-sm font-medium">Dashboard</p>
           </Link>
-          <Link className={`flex items-center gap-3 px-4 py-2 rounded-lg ${pathname === "/tracker" ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"} transition-colors`} href="/tracker">
+          <Link
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg ${pathname === "/tracker" ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"} transition-colors`}
+            href="/tracker"
+          >
             <span className="material-symbols-outlined">calendar_month</span>
             <p className="text-sm font-medium">Cycle Calendar</p>
           </Link>
@@ -34,8 +42,12 @@ export default function Sidebar() {
             }}
           ></div>
           <div className="flex flex-col">
-            <h1 className="text-text-light text-sm font-medium leading-normal">Elena</h1>
-            <p className="text-text-muted-light text-xs font-normal leading-normal">elena@email.com</p>
+            <h1 className="text-text-light text-sm font-medium leading-normal">
+              Elena
+            </h1>
+            <p className="text-text-muted-light text-xs font-normal leading-normal">
+              elena@email.com
+            </p>
           </div>
         </div>
       </div>

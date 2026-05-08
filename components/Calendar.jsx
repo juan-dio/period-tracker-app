@@ -132,13 +132,13 @@ export default function Calendar() {
   // Fungsi navigasi bulan
   const prevMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
     );
   };
 
   const nextMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
     );
   };
 
@@ -172,20 +172,29 @@ export default function Calendar() {
       let type = null;
       let ovulation = false;
 
-      // Contoh logic - bisa diganti dengan prediksi siklus yang sebenarnya
-      if (isToday) {
-        // Jika hari ini
-        type = "today";
-      } else if (hasLogData && hasLogData.flow > 0) {
+      // Hitung prediksi terlebih dahulu (SEBELUM isToday, agar period/fertile tetap terlihat)
+      if (hasLogData && hasLogData.flow > 0) {
         // Jika ada flow pada hari tersebut (data user)
         type = "period";
-      } else if (predictionData?.predictions) {
-        // Hasil prediksi
+      } else if (
+        predictionData?.predictions &&
+        Array.isArray(predictionData.predictions)
+      ) {
+        // Hasil prediksi (guard dengan array check)
         for (const prediction of predictionData.predictions) {
+          // Guard properti nested
+          const period = prediction?.period;
+          const fertile = prediction?.fertileWindow;
+          const ovulationDate = prediction?.ovulation;
+
+          if (!period || !fertile) continue; // Skip jika data tidak lengkap
+
           // Period
           if (
-            dateKey >= prediction.period.start &&
-            dateKey <= prediction.period.end
+            period.start &&
+            period.end &&
+            dateKey >= period.start &&
+            dateKey <= period.end
           ) {
             type = "period";
             break;
@@ -193,11 +202,13 @@ export default function Calendar() {
 
           // Fertile Window
           if (
-            dateKey >= prediction.fertileWindow.start &&
-            dateKey <= prediction.fertileWindow.end
+            fertile.start &&
+            fertile.end &&
+            dateKey >= fertile.start &&
+            dateKey <= fertile.end
           ) {
             type = "fertile";
-            if (dateKey === prediction.ovulation) {
+            if (ovulationDate && dateKey === ovulationDate) {
               // Jika hari ovulation
               ovulation = true;
             }
@@ -205,13 +216,16 @@ export default function Calendar() {
         }
       }
 
+      // Tambahkan flag isToday jika hari ini, tapi jangan override type
+      const hasTodayStyle = isToday;
+
       days.push({
         date: new Date(currentDay),
         day: currentDay.getDate(),
         type,
         ovulation,
         isCurrentMonth,
-        isToday,
+        isToday: hasTodayStyle,
         isSelected,
         hasLogData,
       });
@@ -221,22 +235,43 @@ export default function Calendar() {
   };
 
   const getDayClass = (day) => {
-    if (day.isSelected && day.type !== "today") {
-      return "bg-primary/20 text-primary border-2 border-primary";
+    let dayClass = "";
+
+    // Jika hari ini, overlay dengan ring inset DIATAS period/fertile
+    if (day.isToday) {
+      switch (day.type) {
+        case "period":
+          dayClass = "bg-period text-white ring-2 ring-inset ring-primary";
+          break;
+        case "fertile":
+          dayClass =
+            "bg-fertile/30 text-text-light ring-2 ring-inset ring-primary";
+          break;
+        default:
+          dayClass = "bg-primary text-white ring-2 ring-inset ring-primary";
+      }
+    } else {
+      // Default styling untuk non-today
+      switch (day.type) {
+        case "period":
+          dayClass = "bg-period text-white";
+          break;
+        case "fertile":
+          dayClass = "bg-fertile/30 text-text-light";
+          break;
+        default:
+          dayClass = day.isCurrentMonth
+            ? "text-text-light hover:bg-gray-50"
+            : "text-gray-300";
+      }
     }
 
-    switch (day.type) {
-      case "period":
-        return "bg-period text-white";
-      case "fertile":
-        return "bg-fertile/30 text-text-light";
-      case "today":
-        return "bg-primary text-white ring-2 ring-primary";
-      default:
-        return day.isCurrentMonth
-          ? "text-text-light hover:bg-gray-50"
-          : "text-gray-300";
+    // Tambah selected ring inset style di akhir (tidak menimpa warna background dan berada di dalam kotak)
+    if (day.isSelected && day.type !== "today") {
+      dayClass += " ring-2 ring-inset ring-primary";
     }
+
+    return dayClass;
   };
 
   function toggleSymptom(symptomId) {
@@ -302,8 +337,8 @@ export default function Calendar() {
                       new Date(
                         currentDate.getFullYear(),
                         parseInt(e.target.value),
-                        1
-                      )
+                        1,
+                      ),
                     )
                   }
                   className="text-text-light text-lg font-bold leading-tight bg-transparent border-none focus:outline-none"
@@ -322,15 +357,15 @@ export default function Calendar() {
                       new Date(
                         parseInt(e.target.value),
                         currentDate.getMonth(),
-                        1
-                      )
+                        1,
+                      ),
                     )
                   }
                   className="text-text-light text-lg font-bold leading-tight bg-transparent border-none focus:outline-none"
                 >
                   {Array.from(
                     { length: 10 },
-                    (_, i) => new Date().getFullYear() - 5 + i
+                    (_, i) => new Date().getFullYear() - 5 + i,
                   ).map((year) => (
                     <option key={year} value={year}>
                       {year}
@@ -367,7 +402,7 @@ export default function Calendar() {
                   key={index}
                   onClick={() => setSelectedDate(dayInfo.date)}
                   className={`h-14 w-full text-sm font-medium leading-normal relative transition-all ${getDayClass(
-                    dayInfo
+                    dayInfo,
                   )}`}
                 >
                   <div className="flex size-full items-center justify-center rounded-lg flex-col">
@@ -389,31 +424,41 @@ export default function Calendar() {
             </div>
 
             {/* Legend */}
-            <div className="mt-6 border-t border-border-light pt-4 flex flex-wrap gap-x-6 gap-y-3">
-              <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-period"></div>
-                <span className="text-xs font-medium text-text-muted-light">
-                  Period
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-fertile/50"></div>
-                <span className="text-xs font-medium text-text-muted-light">
-                  Fertile Window
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-ovulation"></div>
-                <span className="text-xs font-medium text-text-muted-light">
-                  Ovulation
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                <span className="text-xs font-medium text-text-muted-light">
-                  Has Log
-                </span>
-              </div>
+            <div className="mt-6 border-t border-border-light pt-4">
+              {!predictionData || predictionData === null ? (
+                <div className="flex items-center justify-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-700 font-medium">
+                    Log period data to see predictions & cycle insights
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-period"></div>
+                    <span className="text-xs font-medium text-text-muted-light">
+                      Period
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-fertile/50"></div>
+                    <span className="text-xs font-medium text-text-muted-light">
+                      Fertile Window
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-ovulation"></div>
+                    <span className="text-xs font-medium text-text-muted-light">
+                      Ovulation
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                    <span className="text-xs font-medium text-text-muted-light">
+                      Has Log
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
