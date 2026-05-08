@@ -13,6 +13,7 @@ export default function DashboardContent({ summary }) {
 
   const today = new Date();
   const todayKey = formatDate(today);
+  const dayMs = 1000 * 60 * 60 * 24;
 
   // Ambil prediksi period terdekat setelah hari ini
   let nextPeriod = null;
@@ -52,10 +53,15 @@ export default function DashboardContent({ summary }) {
     ? Math.ceil((new Date(nextPeriod.start) - today) / (1000 * 60 * 60 * 24))
     : null;
 
-  // Current cycle day (dihitung dari lastPeriod)
-  const currentCycle = lastPeriod
-    ? Math.ceil((today - new Date(lastPeriod.start)) / (1000 * 60 * 60 * 24))
+  // Current cycle day selalu dibatasi dalam 1..meanCycleLength
+  const daysSinceLastPeriod = lastPeriod
+    ? Math.floor((today - new Date(lastPeriod.start)) / dayMs)
     : null;
+
+  const currentCycle =
+    daysSinceLastPeriod !== null
+      ? (Math.max(daysSinceLastPeriod, 0) % meanCycleLength) + 1
+      : null;
 
   // Current phase
   const currentPhase = (() => {
@@ -65,12 +71,17 @@ export default function DashboardContent({ summary }) {
         message: "No period data available to determine current phase.",
       };
 
-    const daysSinceLastPeriod = Math.ceil(
-      (today - new Date(lastPeriod.start)) / (1000 * 60 * 60 * 24)
-    );
+    const cycleDay = currentCycle;
+
+    if (!cycleDay) {
+      return {
+        phase: "Unknown Phase",
+        message: "No period data available to determine current phase.",
+      };
+    }
 
     // menstrual
-    if (daysSinceLastPeriod <= meanPeriodLength) {
+    if (cycleDay <= meanPeriodLength) {
       return {
         phase: "Menstrual Phase",
         message: "It's your period. Rest and take care of yourself.",
@@ -79,7 +90,7 @@ export default function DashboardContent({ summary }) {
 
     const ovulationDay = meanCycleLength - lutealPhaseLength;
 
-    if (daysSinceLastPeriod < ovulationDay) {
+    if (cycleDay < ovulationDay) {
       return {
         phase: "Follicular Phase",
         message:
@@ -87,7 +98,7 @@ export default function DashboardContent({ summary }) {
       };
     }
 
-    if (daysSinceLastPeriod === ovulationDay) {
+    if (cycleDay === ovulationDay) {
       return {
         phase: "Ovulation Phase",
         message: "Ovulation is happening today. Stay hydrated and take care!",

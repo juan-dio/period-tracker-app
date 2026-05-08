@@ -12,8 +12,10 @@ export default function Layout(props) {
   const { children } = props;
 
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="font-display bg-background-light text-text-light">{children}</body>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="font-display bg-background-light text-text-light">
+        {children}
+      </body>
     </html>
   );
 }
