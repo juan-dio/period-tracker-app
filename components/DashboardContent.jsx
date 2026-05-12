@@ -2,7 +2,10 @@
 
 import { formatDate } from "@/lib/utils";
 
-export default function DashboardContent({ summary }) {
+export default function DashboardContent({
+  summary,
+  todayKey: serverTodayKey,
+}) {
   const {
     lastPeriod,
     meanCycleLength = 28,
@@ -11,8 +14,8 @@ export default function DashboardContent({ summary }) {
     predictions = [],
   } = summary || {};
 
-  const today = new Date();
-  const todayKey = formatDate(today);
+  const todayKey = serverTodayKey || formatDate(new Date());
+  const today = new Date(`${todayKey}T00:00:00`);
   const dayMs = 1000 * 60 * 60 * 24;
 
   // Ambil prediksi period terdekat setelah hari ini
