@@ -2,23 +2,16 @@
 
 import { loginAction } from "@/lib/actions/auth";
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [state, formAction] = useActionState(loginAction, { errors: {} });
-  const [registered, setRegistered] = useState(false);
-  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const searchParams = new URLSearchParams(window.location.search);
-    setRegistered(searchParams.get("registered") === "true");
-    setNeedsConfirmation(searchParams.get("needs_confirmation") === "true");
-  }, []);
+  const searchParams = useSearchParams();
+  const registered = searchParams?.get("registered") === "true";
+  const needsConfirmation = searchParams?.get("needs_confirmation") === "true";
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light">
