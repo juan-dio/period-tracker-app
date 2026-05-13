@@ -267,7 +267,7 @@ export default function DashboardContent({ user, summary, recentCycles }) {
                 </p>
                 <Link
                   href="/tracker"
-                  className="w-full bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+                  className="w-full bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors cursor-pointer"
                 >
                   Log Today&apos;s Feelings & Symptoms
                 </Link>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Logo from "./Logo";
 
 export default function Sidebar({ user }) {
   const pathname = usePathname();
@@ -32,11 +33,8 @@ export default function Sidebar({ user }) {
   return (
     <aside className="sticky top-0 h-screen w-64 shrink-0 overflow-hidden bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
       <div className="flex h-full flex-col gap-8">
-        <div className="flex items-center gap-2 px-2">
-          <span className="material-symbols-outlined text-primary text-3xl">
-            cycle
-          </span>
-          <h1 className="text-xl font-bold text-text-light">Femina</h1>
+        <div className="flex justify-center">
+          <Logo />
         </div>
         <div className="flex flex-col gap-2">
           <Link
@@ -119,14 +117,14 @@ export default function Sidebar({ user }) {
                 <button
                   type="button"
                   onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 rounded-lg border border-border-light px-4 py-2 text-sm font-medium text-text-light hover:bg-gray-50 transition-colors"
+                  className="flex-1 rounded-lg border border-border-light px-4 py-2 text-sm font-medium text-text-light hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <form action={logoutAction} className="flex-1">
                   <button
                     type="submit"
-                    className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors"
+                    className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80 transition-colors cursor-pointer"
                   >
                     Logout
                   </button>

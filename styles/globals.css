@@ -5,16 +5,16 @@
 
 @theme {
   /* Colors */
-  --color-primary: #3b82f6;
+  --color-primary: #7d0a0a;
   --color-period: #ff80a3;
   --color-fertile: #90c4f9;
   --color-ovulation: #6c63ff;
-  --color-background-light: #f7fafc;
+  --color-background-light: #eeeeee;
   --color-card-light: #ffffff;
-  --color-text-light: #1f2937;
+  --color-text-light: #1d1616;
   --color-text-muted-light: #6b7280;
   --color-border-light: #edf2f7;
-  --color-primary-light: #ebf8ff;
+  --color-primary-light: #ead196;
 
   /* Font Family */
   --font-display: "Inter", "sans-serif";
@@ -27,7 +27,11 @@
 }
 
 .material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 body {
