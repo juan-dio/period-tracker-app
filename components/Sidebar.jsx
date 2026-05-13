@@ -1,10 +1,33 @@
 "use client";
 
+import { logoutAction } from "@/lib/actions/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  useEffect(() => {
+    if (!showLogoutModal) {
+      return;
+    }
+
+    const bodyStyle = document.body.style;
+    const htmlStyle = document.documentElement.style;
+    const previousBodyOverflow = bodyStyle.overflow;
+    const previousHtmlOverflow = htmlStyle.overflow;
+
+    bodyStyle.overflow = "hidden";
+    htmlStyle.overflow = "hidden";
+
+    return () => {
+      bodyStyle.overflow = previousBodyOverflow;
+      htmlStyle.overflow = previousHtmlOverflow;
+    };
+  }, [showLogoutModal]);
 
   return (
     <aside className="sticky top-0 h-screen w-64 shrink-0 overflow-hidden bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
@@ -32,7 +55,16 @@ export default function Sidebar() {
           </Link>
         </div>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-3">
+        <button
+          type="button"
+          onClick={() => setShowLogoutModal(true)}
+          className="flex items-center gap-3 rounded-lg px-4 py-2 text-left text-text-muted-light hover:bg-gray-100 transition-colors"
+        >
+          <span className="material-symbols-outlined">logout</span>
+          <p className="text-sm font-medium">Logout</p>
+        </button>
+
         <div className="flex items-center gap-3 p-3">
           <div
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
@@ -51,6 +83,52 @@ export default function Sidebar() {
           </div>
         </div>
       </div>
+
+      {showLogoutModal &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-9999 flex items-center justify-center bg-black/50 p-4 transition-all duration-200 ease-out pointer-events-auto opacity-100"
+            onClick={() => setShowLogoutModal(false)}
+          >
+            <div
+              className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-border-light transform transition-all duration-200 ease-out scale-100 translate-y-0"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex size-10 items-center justify-center rounded-full bg-red-50 text-red-600">
+                  <span className="material-symbols-outlined">logout</span>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-text-light">
+                    Confirm logout
+                  </h2>
+                  <p className="mt-1 text-sm text-text-muted-light">
+                    Are you sure you want to logout from this account?
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 rounded-lg border border-border-light px-4 py-2 text-sm font-medium text-text-light hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <form action={logoutAction} className="flex-1">
+                  <button
+                    type="submit"
+                    className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </aside>
   );
 }
