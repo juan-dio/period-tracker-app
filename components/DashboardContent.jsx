@@ -1,11 +1,9 @@
 "use client";
 
 import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 
-export default function DashboardContent({
-  summary,
-  todayKey: serverTodayKey,
-}) {
+export default function DashboardContent({ user, summary, recentCycles }) {
   const {
     lastPeriod,
     meanCycleLength = 28,
@@ -14,9 +12,17 @@ export default function DashboardContent({
     predictions = [],
   } = summary || {};
 
-  const todayKey = serverTodayKey || formatDate(new Date());
-  const today = new Date(`${todayKey}T00:00:00`);
+  const today = new Date();
+  const todayKey = formatDate(new Date());
   const dayMs = 1000 * 60 * 60 * 24;
+  const recentSymptoms = recentCycles.symptoms || [];
+
+  const symptomOptions = [
+    { id: "cramps", label: "Cramps", icon: "sentiment_stressed" },
+    { id: "headache", label: "Headache", icon: "sick" },
+    { id: "bloating", label: "Bloating", icon: "grain" },
+    { id: "fatigue", label: "Fatigue", icon: "battery_very_low" },
+  ];
 
   // Ambil prediksi period terdekat setelah hari ini
   let nextPeriod = null;
@@ -119,13 +125,24 @@ export default function DashboardContent({
     ? Math.min((currentCycle / meanCycleLength) * 100, 100)
     : 0;
 
+  // time
+  let timeOfDay;
+  const hour = new Date().getHours();
+  if (hour < 12) {
+    timeOfDay = "Morning";
+  } else if (hour < 18) {
+    timeOfDay = "Afternoon";
+  } else {
+    timeOfDay = "Evening";
+  }
+
   return (
     <main className="flex-1 p-6 lg:p-10" suppressHydrationWarning>
       <div className="mx-auto max-w-5xl">
         <header className="mb-8">
           <div className="flex flex-col gap-1">
             <h1 className="text-text-light text-3xl font-bold leading-tight">
-              Good Morning, Elena
+              Good {timeOfDay}, {user.email.split("@")[0]}!
             </h1>
             <p className="text-text-muted-light text-base font-normal leading-normal">
               Here is your cycle summary for today.
@@ -183,15 +200,23 @@ export default function DashboardContent({
                 Recent Symptoms
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="flex items-center gap-3 rounded-lg p-3 bg-background-light">
-                  <div className="flex items-center justify-center size-8 rounded-full bg-primary-light text-primary">
-                    <span className="material-symbols-outlined text-base">
-                      sentiment_very_dissatisfied
-                    </span>
+                {recentSymptoms.map((symptom) => (
+                  <div
+                    key={symptom}
+                    className="flex items-center gap-3 rounded-lg p-3 bg-background-light"
+                  >
+                    <div className="flex items-center justify-center size-8 rounded-full bg-primary-light text-primary">
+                      <span className="material-symbols-outlined text-base">
+                        {symptomOptions.find((s) => s.id === symptom)?.icon ||
+                          "help"}
+                      </span>
+                    </div>
+                    <p className="text-sm font-medium text-text-light">
+                      {symptomOptions.find((s) => s.id === symptom)?.label ||
+                        symptom}
+                    </p>
                   </div>
-                  <p className="text-sm font-medium text-text-light">Cramps</p>
-                </div>
-                {/* Tambahkan symptom cards lainnya */}
+                ))}
               </div>
             </div>
           </div>
@@ -240,9 +265,12 @@ export default function DashboardContent({
                   Logging your feelings and symptoms helps improve prediction
                   accuracy.
                 </p>
-                <button className="w-full bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+                <Link
+                  href="/tracker"
+                  className="w-full bg-primary text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
+                >
                   Log Today&apos;s Feelings & Symptoms
-                </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -55,17 +55,24 @@ export default function Sidebar() {
           </Link>
         </div>
       </div>
+
       <div className="flex flex-col gap-3">
+        <div className="p-2 overflow-hidden">
+          <p className="text-text-muted-light text-sm font-normal leading-normal">
+            {user.email}
+          </p>
+        </div>
+
         <button
           type="button"
           onClick={() => setShowLogoutModal(true)}
-          className="flex items-center gap-3 rounded-lg px-4 py-2 text-left text-text-muted-light hover:bg-gray-100 transition-colors"
+          className="flex items-center gap-3 rounded-lg px-4 py-2 text-left text-text-muted-light hover:bg-gray-100 transition-colors cursor-pointer"
         >
           <span className="material-symbols-outlined">logout</span>
           <p className="text-sm font-medium">Logout</p>
         </button>
 
-        <div className="flex items-center gap-3 p-3">
+        {/* <div className="flex items-center gap-3 p-3">
           <div
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
             style={{
@@ -81,7 +88,7 @@ export default function Sidebar() {
               elena@email.com
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {showLogoutModal &&

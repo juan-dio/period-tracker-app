@@ -63,7 +63,7 @@ export default function Calendar() {
     if (predictionResult.errors) {
       console.error("Error loading predictions:", predictionResult.errors);
     } else {
-      setPredictionData(predictionResult.predictions);
+      setPredictionData(predictionResult.data);
     }
 
     setIsLoading(false);
