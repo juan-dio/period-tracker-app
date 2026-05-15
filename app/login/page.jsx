@@ -2,11 +2,36 @@
 
 import { loginAction } from "@/lib/actions/auth";
 import Link from "next/link";
+import { Suspense } from "react";
 import { useActionState, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Logo from "@/components/Logo";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageFallback />}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageFallback() {
+  return (
+    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light">
+      <div className="layout-container flex h-full grow flex-col">
+        <div className="flex flex-1 justify-center px-4 py-5 md:px-40">
+          <div className="layout-content-container flex max-w-[480px] flex-1 flex-col">
+            <div className="flex flex-col items-center justify-center p-4">
+              <Logo />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoginPageContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [state, formAction] = useActionState(loginAction, { errors: {} });
 
