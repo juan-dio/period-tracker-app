@@ -8,7 +8,9 @@ import { useActionState, useState } from "react";
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [state, formAction] = useActionState(signUpAction, { errors: {} });
+  const [state, formAction, isPending] = useActionState(signUpAction, {
+    errors: {},
+  });
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light">
@@ -125,9 +127,12 @@ export default function SignupPage() {
                   <div className="flex px-4 py-3 justify-center w-full">
                     <button
                       type="submit"
-                      className="flex min-w-[84px] w-full max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display hover:bg-primary/80 transition-colors"
+                      disabled={isPending}
+                      className="flex min-w-[84px] w-full max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display hover:bg-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <span className="truncate">Sign Up</span>
+                      <span className="truncate">
+                        {isPending ? "signing up..." : "Sign Up"}
+                      </span>
                     </button>
                   </div>
                 </form>

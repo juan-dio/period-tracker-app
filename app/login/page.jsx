@@ -33,7 +33,9 @@ function LoginPageFallback() {
 
 function LoginPageContent() {
   const [showPassword, setShowPassword] = useState(false);
-  const [state, formAction] = useActionState(loginAction, { errors: {} });
+  const [state, formAction, isPending] = useActionState(loginAction, {
+    errors: {},
+  });
 
   const searchParams = useSearchParams();
   const registered = searchParams?.get("registered") === "true";
@@ -130,9 +132,12 @@ function LoginPageContent() {
                   <div className="flex px-4 py-3 justify-center w-full">
                     <button
                       type="submit"
-                      className="flex min-w-[84px] w-full max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display hover:bg-primary/80 transition-colors"
+                      disabled={isPending}
+                      className="flex min-w-[84px] w-full max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display hover:bg-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <span className="truncate">Login</span>
+                      <span className="truncate">
+                        {isPending ? "logging in..." : "Login"}
+                      </span>
                     </button>
                   </div>
                 </form>
