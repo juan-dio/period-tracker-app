@@ -20,13 +20,24 @@ function Sidebar({ user }) {
     const htmlStyle = document.documentElement.style;
     const previousBodyOverflow = bodyStyle.overflow;
     const previousHtmlOverflow = htmlStyle.overflow;
+    const previousBodyPaddingRight = bodyStyle.paddingRight;
+    const previousScrollPosition = window.scrollY;
+
+    // Calculate scrollbar width
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
 
     bodyStyle.overflow = "hidden";
     htmlStyle.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      bodyStyle.paddingRight = `${scrollbarWidth}px`;
+    }
 
     return () => {
       bodyStyle.overflow = previousBodyOverflow;
       htmlStyle.overflow = previousHtmlOverflow;
+      bodyStyle.paddingRight = previousBodyPaddingRight;
+      window.scrollTo(0, previousScrollPosition);
     };
   }, [showLogoutModal]);
 
