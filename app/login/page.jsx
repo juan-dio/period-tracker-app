@@ -136,7 +136,7 @@ function LoginPageContent() {
                       className="flex min-w-[84px] w-full max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] font-display hover:bg-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <span className="truncate">
-                        {isPending ? "logging in..." : "Login"}
+                        {isPending ? "Logging in..." : "Login"}
                       </span>
                     </button>
                   </div>

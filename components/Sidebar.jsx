@@ -4,6 +4,7 @@ import { logoutAction } from "@/lib/actions/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, memo } from "react";
+import { useFormStatus } from "react-dom";
 import { createPortal } from "react-dom";
 import Logo from "./Logo";
 
@@ -133,12 +134,7 @@ function Sidebar({ user }) {
                   Cancel
                 </button>
                 <form action={logoutAction} className="flex-1">
-                  <button
-                    type="submit"
-                    className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80 transition-colors cursor-pointer"
-                  >
-                    Logout
-                  </button>
+                  <LogoutButton />
                 </form>
               </div>
             </div>
@@ -146,6 +142,20 @@ function Sidebar({ user }) {
           document.body,
         )}
     </aside>
+  );
+}
+
+function LogoutButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {pending ? "Logging out..." : "Logout"}
+    </button>
   );
 }
 
