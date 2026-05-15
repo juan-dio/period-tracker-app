@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata = {
-  title: "PERIOD-APP",
+  title: "Period App",
   description: "Track your menstrual cycle and symptoms",
 };
 
