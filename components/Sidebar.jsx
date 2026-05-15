@@ -3,11 +3,11 @@
 import { logoutAction } from "@/lib/actions/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { createPortal } from "react-dom";
 import Logo from "./Logo";
 
-export default function Sidebar({ user }) {
+function Sidebar({ user }) {
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -137,3 +137,5 @@ export default function Sidebar({ user }) {
     </aside>
   );
 }
+
+export default memo(Sidebar);
