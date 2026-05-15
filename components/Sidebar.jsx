@@ -42,7 +42,7 @@ function Sidebar({ user }) {
   }, [showLogoutModal]);
 
   return (
-    <aside className="sticky top-0 h-screen w-64 shrink-0 overflow-hidden bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
+    <aside className="fixed top-0 left-0 h-screen w-64 shrink-0 overflow-hidden bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
       <div className="flex h-full flex-col gap-8">
         <div className="flex justify-center">
           <Logo />

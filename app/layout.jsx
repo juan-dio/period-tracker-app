@@ -17,9 +17,9 @@ export default async function Layout({ children }) {
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="font-display bg-background-light text-text-light">
         {user ? (
-          <div className="flex min-h-screen">
+          <div className="min-h-screen">
             <Sidebar user={user} />
-            <main className="flex-1">{children}</main>
+            <main className="ml-64">{children}</main>
           </div>
         ) : (
           <>{children}</>
