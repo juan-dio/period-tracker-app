@@ -19,7 +19,7 @@ export default async function Layout({ children }) {
         {user ? (
           <div className="min-h-screen">
             <Sidebar user={user} />
-            <main className="ml-64">{children}</main>
+            <main className="lg:ml-64">{children}</main>
           </div>
         ) : (
           <>{children}</>
