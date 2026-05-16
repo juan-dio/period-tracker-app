@@ -308,8 +308,8 @@ export default function Calendar() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="flex flex-wrap justify-between gap-4 items-center mb-8">
-        <p className="text-text-light text-3xl font-bold leading-tight tracking-[-0.033em] min-w-72">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 sm:mb-8">
+        <p className="text-2xl font-bold leading-tight tracking-[-0.033em] text-text-light sm:text-3xl">
           Cycle Calendar
         </p>
       </div>
@@ -317,9 +317,9 @@ export default function Calendar() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Calendar Section */}
         <div className="xl:col-span-2 bg-card-light p-4 sm:p-6 rounded-lg shadow-sm border border-border-light">
-          <div className="flex min-w-72 w-full flex-col gap-2">
+          <div className="flex w-full flex-col gap-2 overflow-hidden">
             {/* Calendar Header */}
-            <div className="flex items-center p-1 justify-between">
+            <div className="flex items-center justify-between gap-2 p-1">
               <button
                 onClick={prevMonth}
                 className="flex size-10 items-center justify-center rounded-full text-text-muted-light hover:bg-slate-100 transition-colors"
@@ -329,7 +329,7 @@ export default function Calendar() {
                 </span>
               </button>
 
-              <div className="flex items-center gap-4">
+              <div className="flex min-w-0 items-center gap-2 sm:gap-4">
                 <select
                   value={currentDate.getMonth()}
                   onChange={(e) =>
@@ -341,7 +341,7 @@ export default function Calendar() {
                       ),
                     )
                   }
-                  className="text-text-light text-lg font-bold leading-tight bg-transparent border-none focus:outline-none"
+                  className="max-w-30 truncate border-none bg-transparent text-base font-bold leading-tight text-text-light focus:outline-none sm:max-w-none sm:text-lg"
                 >
                   {monthNames.map((month, index) => (
                     <option key={month} value={index}>
@@ -361,7 +361,7 @@ export default function Calendar() {
                       ),
                     )
                   }
-                  className="text-text-light text-lg font-bold leading-tight bg-transparent border-none focus:outline-none"
+                  className="w-20 border-none bg-transparent text-base font-bold leading-tight text-text-light focus:outline-none sm:w-auto sm:text-lg"
                 >
                   {Array.from(
                     { length: 10 },
@@ -401,7 +401,7 @@ export default function Calendar() {
                 <button
                   key={index}
                   onClick={() => setSelectedDate(dayInfo.date)}
-                  className={`h-14 w-full text-sm font-medium leading-normal relative transition-all ${getDayClass(
+                  className={`relative h-11 w-full text-xs font-medium leading-normal transition-all sm:h-14 sm:text-sm ${getDayClass(
                     dayInfo,
                   )}`}
                 >

@@ -9,7 +9,7 @@ export default async function TrackerPage() {
   }
 
   return (
-    <div className="p-6 lg:p-10">
+    <div className="p-4 sm:p-6 lg:p-10">
       <Calendar />
     </div>
   );

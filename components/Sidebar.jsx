@@ -11,6 +11,24 @@ import Logo from "./Logo";
 function Sidebar({ user }) {
   const pathname = usePathname();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuAnimating, setIsMenuAnimating] = useState(false);
+
+  const handleMenuOpen = () => {
+    setIsMobileMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuAnimating(false);
+    setTimeout(() => setIsMobileMenuOpen(false), 300);
+  };
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      // Trigger animation on next frame after portal renders
+      requestAnimationFrame(() => setIsMenuAnimating(true));
+    }
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     if (!showLogoutModal) {
@@ -42,64 +60,120 @@ function Sidebar({ user }) {
     };
   }, [showLogoutModal]);
 
+  const navItems = [
+    { href: "/", label: "Dashboard", icon: "dashboard" },
+    { href: "/tracker", label: "Cycle Calendar", icon: "calendar_month" },
+  ];
+
   return (
-    <aside className="fixed top-0 left-0 h-screen w-64 shrink-0 overflow-hidden bg-card-light p-6 flex flex-col justify-between border-r border-border-light">
-      <div className="flex h-full flex-col gap-8">
-        <div className="flex justify-center">
-          <Logo />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Link
-            className={`flex items-center gap-3 px-4 py-2 rounded-lg ${pathname === "/" ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"} transition-colors`}
-            href="/"
-          >
-            <span className="material-symbols-outlined">dashboard</span>
-            <p className="text-sm font-medium">Dashboard</p>
-          </Link>
-          <Link
-            className={`flex items-center gap-3 px-4 py-2 rounded-lg ${pathname === "/tracker" ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"} transition-colors`}
-            href="/tracker"
-          >
-            <span className="material-symbols-outlined">calendar_month</span>
-            <p className="text-sm font-medium">Cycle Calendar</p>
-          </Link>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <div className="p-2 overflow-hidden">
-          <p className="text-text-muted-light text-sm font-normal leading-normal">
-            {user.email}
-          </p>
-        </div>
-
+    <>
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border-light bg-card-light px-4 py-3 lg:hidden">
+        <Logo />
         <button
           type="button"
-          onClick={() => setShowLogoutModal(true)}
-          className="flex items-center gap-3 rounded-lg px-4 py-2 text-left text-text-muted-light hover:bg-gray-100 transition-colors cursor-pointer"
+          aria-label="Open menu"
+          onClick={handleMenuOpen}
+          className="flex size-10 items-center justify-center rounded-lg text-text-light hover:bg-gray-100 transition-colors"
         >
-          <span className="material-symbols-outlined">logout</span>
-          <p className="text-sm font-medium">Logout</p>
+          <span className="material-symbols-outlined">menu</span>
         </button>
+      </header>
 
-        {/* <div className="flex items-center gap-3 p-3">
-          <div
-            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-            style={{
-              backgroundImage:
-                'url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7_K4zILQwmdf6NyiqkqQjBitr_kJgN5iZmcU3-5w4abRkzCJPm3t-469NjcXztKgZuZx5Lv44-CFG20j6X4M80crHNg1aVn7Rme-R-ktaDOSm2Vv4heP48--cM1rEwkB5IIOUwLaeGQxMOfgQylejChbpuERCXJM4_SZTfwBdvgdIyd0xMhqJQH5DSJfL0C-rx8s7prSBEaxB-IyqsCcOCKMcev233QFj2-dqOPQHkSlRM3yOBlxW4TEu1f6ZPE9ZdYXfzsAM33I")',
-            }}
-          ></div>
-          <div className="flex flex-col">
-            <h1 className="text-text-light text-sm font-medium leading-normal">
-              Elena
-            </h1>
-            <p className="text-text-muted-light text-xs font-normal leading-normal">
-              elena@email.com
+      <aside className="fixed top-0 left-0 hidden h-screen w-64 shrink-0 overflow-hidden border-r border-border-light bg-card-light p-6 lg:flex lg:flex-col lg:justify-between">
+        <div className="flex h-full flex-col gap-8">
+          <div className="flex justify-center">
+            <Logo />
+          </div>
+          <div className="flex flex-col gap-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                className={`flex items-center gap-3 rounded-lg px-4 py-2 transition-colors ${pathname === item.href ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"}`}
+                href={item.href}
+              >
+                <span className="material-symbols-outlined">{item.icon}</span>
+                <p className="text-sm font-medium">{item.label}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <div className="overflow-hidden p-2">
+            <p className="text-sm font-normal leading-normal text-text-muted-light">
+              {user.email}
             </p>
           </div>
-        </div> */}
-      </div>
+
+          <button
+            type="button"
+            onClick={() => setShowLogoutModal(true)}
+            className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2 text-left text-text-muted-light transition-colors hover:bg-gray-100"
+          >
+            <span className="material-symbols-outlined">logout</span>
+            <p className="text-sm font-medium">Logout</p>
+          </button>
+        </div>
+      </aside>
+
+      {isMobileMenuOpen &&
+        createPortal(
+          <div
+            className={`fixed inset-0 z-50 bg-black/40 transition-opacity duration-300 ease-in-out lg:hidden ${isMenuAnimating ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            onClick={handleMenuClose}
+          >
+            <aside
+              className={`h-full w-72 max-w-[85vw] border-r border-border-light bg-card-light p-5 transform transition-transform duration-300 ease-in-out ${isMenuAnimating ? "translate-x-0" : "-translate-x-full"}`}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="mb-6 flex items-center justify-between">
+                <Logo />
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  onClick={handleMenuClose}
+                  className="flex size-10 items-center justify-center rounded-lg text-text-light hover:bg-gray-100 transition-colors"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    className={`flex items-center gap-3 rounded-lg px-4 py-2 transition-colors ${pathname === item.href ? "bg-primary text-white" : "text-text-muted-light hover:bg-gray-100"}`}
+                    href={item.href}
+                    onClick={handleMenuClose}
+                  >
+                    <span className="material-symbols-outlined">
+                      {item.icon}
+                    </span>
+                    <p className="text-sm font-medium">{item.label}</p>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-8 border-t border-border-light pt-4">
+                <p className="truncate px-2 text-sm text-text-muted-light">
+                  {user.email}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleMenuClose();
+                    setShowLogoutModal(true);
+                  }}
+                  className="mt-2 flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-2 text-left text-text-muted-light transition-colors hover:bg-gray-100"
+                >
+                  <span className="material-symbols-outlined">logout</span>
+                  <p className="text-sm font-medium">Logout</p>
+                </button>
+              </div>
+            </aside>
+          </div>,
+          document.body,
+        )}
 
       {showLogoutModal &&
         createPortal(
@@ -108,7 +182,7 @@ function Sidebar({ user }) {
             onClick={() => setShowLogoutModal(false)}
           >
             <div
-              className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-border-light transform transition-all duration-200 ease-out scale-100 translate-y-0"
+              className="w-full max-w-sm rounded-2xl border border-border-light bg-white p-6 shadow-2xl transform transition-all duration-200 ease-out scale-100 translate-y-0"
               onClick={(event) => event.stopPropagation()}
             >
               <div className="flex items-start gap-3">
@@ -129,7 +203,7 @@ function Sidebar({ user }) {
                 <button
                   type="button"
                   onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 rounded-lg border border-border-light px-4 py-2 text-sm font-medium text-text-light hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="flex-1 cursor-pointer rounded-lg border border-border-light px-4 py-2 text-sm font-medium text-text-light transition-colors hover:bg-gray-50"
                 >
                   Cancel
                 </button>
@@ -141,7 +215,7 @@ function Sidebar({ user }) {
           </div>,
           document.body,
         )}
-    </aside>
+    </>
   );
 }
 

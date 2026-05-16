@@ -24,7 +24,6 @@ export default async function Dashboard() {
   if (recentCycle.errors) {
     console.error("Error loading recent cycles:", recentCycle.errors);
   }
-  console.log("Recent cycles:", recentCycle.data);
 
   return (
     <DashboardContent

@@ -137,11 +137,11 @@ export default function DashboardContent({ user, summary, recentCycles }) {
   }
 
   return (
-    <main className="flex-1 p-6 lg:p-10" suppressHydrationWarning>
+    <main className="flex-1 p-4 sm:p-6 lg:p-10" suppressHydrationWarning>
       <div className="mx-auto max-w-5xl">
         <header className="mb-8">
           <div className="flex flex-col gap-1">
-            <h1 className="text-text-light text-3xl font-bold leading-tight">
+            <h1 className="text-2xl font-bold leading-tight text-text-light sm:text-3xl">
               Good {timeOfDay}, {user.email.split("@")[0]}!
             </h1>
             <p className="text-text-muted-light text-base font-normal leading-normal">
@@ -154,7 +154,7 @@ export default function DashboardContent({ user, summary, recentCycles }) {
           <div className="lg:col-span-2 flex flex-col gap-6">
             <div className="bg-card-light p-6 rounded-xl border border-border-light">
               <div className="flex flex-col sm:flex-row items-center justify-start gap-6">
-                <div className="relative w-40 h-40 shrink-0">
+                <div className="relative h-32 w-32 shrink-0 sm:h-40 sm:w-40">
                   <svg className="w-full h-full" viewBox="0 0 36 36">
                     <path
                       className="stroke-current text-gray-200"
@@ -173,7 +173,7 @@ export default function DashboardContent({ user, summary, recentCycles }) {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                     <p className="text-text-muted-light text-sm">Day</p>
-                    <p className="text-text-light text-4xl font-bold">
+                    <p className="text-3xl font-bold text-text-light sm:text-4xl">
                       {currentCycle ?? "-"}
                     </p>
                     <p className="text-text-muted-light text-sm">
@@ -185,7 +185,7 @@ export default function DashboardContent({ user, summary, recentCycles }) {
                   <p className="text-text-muted-light text-xs font-medium uppercase tracking-wider">
                     CURRENT CYCLE
                   </p>
-                  <p className="text-text-light text-2xl font-bold leading-tight">
+                  <p className="text-xl font-bold leading-tight text-text-light sm:text-2xl">
                     You&apos;re in your {currentPhase.phase}
                   </p>
                   <p className="text-text-muted-light text-base font-normal leading-normal max-w-md">
@@ -228,21 +228,21 @@ export default function DashboardContent({ user, summary, recentCycles }) {
                 Upcoming Predictions
               </h2>
               <div className="flex flex-col gap-4">
-                <div className="flex min-w-[158px] flex-1 flex-col gap-1 rounded-lg p-4 bg-background-light">
+                <div className="flex flex-1 flex-col gap-1 rounded-lg bg-background-light p-4">
                   <p className="text-sm font-medium text-text-muted-light">
                     Predicted Ovulation
                   </p>
-                  <p className="text-text-light tracking-light text-2xl font-bold leading-tight">
+                  <p className="text-xl font-bold leading-tight tracking-light text-text-light sm:text-2xl">
                     {nextOvulationDays !== null
                       ? `in ${nextOvulationDays} days`
                       : "Not enough data yet"}
                   </p>
                 </div>
-                <div className="flex min-w-[158px] flex-1 flex-col gap-1 rounded-lg p-4 bg-background-light">
+                <div className="flex flex-1 flex-col gap-1 rounded-lg bg-background-light p-4">
                   <p className="text-sm font-medium text-text-muted-light">
                     Next Period Starts
                   </p>
-                  <p className="text-text-light tracking-light text-2xl font-bold leading-tight">
+                  <p className="text-xl font-bold leading-tight tracking-light text-text-light sm:text-2xl">
                     {nextPeriodDays !== null
                       ? `in ${nextPeriodDays} days`
                       : "Not enough data yet"}
